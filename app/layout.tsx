@@ -6,6 +6,7 @@ import LenisSmoothScroll from "./components/LenisSmoothScroll";
 import Navbar from "./components/Navbar";
 import LoadingScreen from "./components/LoadingScreen";
 import ReadingProgressBar from "./components/ReadingProgressBar";
+import { ThemeProvider } from "./hooks/useTheme";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,18 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_CO",
   },
+  other: {
+    "application/ld+json": JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: "Luis Felipe Díaz",
+      jobTitle: "Full Stack Developer",
+      url: "https://lfdiaz.dev",
+      email: "diazf7583@gmail.com",
+      address: { "@type": "PostalAddress", addressLocality: "Barranquilla", addressCountry: "CO" },
+      knowsAbout: ["React", "Next.js", "Node.js", "TypeScript", "NestJS", ".NET", "Clean Architecture", "DDD"],
+    }),
+  },
 };
 
 export default function RootLayout({
@@ -48,22 +61,25 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      suppressHydrationWarning
     >
       <body className="min-h-full bg-background text-foreground font-sans overflow-x-hidden">
-        <a href="#main-content" className="skip-link">
-          Saltar al contenido principal
-        </a>
-        <div className="scanline" />
-        <div className="noise-overlay" />
-        <CursorEffect />
-        <LenisSmoothScroll />
-        <ReadingProgressBar />
-        <LoadingScreen />
-        <Navbar />
-        <main id="main-content">
-          {children}
-        </main>
+        <ThemeProvider>
+          <a href="#main-content" className="skip-link">
+            Saltar al contenido principal
+          </a>
+          <div className="scanline" />
+          <div className="noise-overlay" />
+          <ReadingProgressBar />
+          <LoadingScreen />
+          <CursorEffect />
+          <LenisSmoothScroll />
+          <Navbar />
+          <main id="main-content">
+            {children}
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );

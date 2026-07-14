@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Code, MapPoint, Globe, Star } from "reicon-react";
-import { profile } from "@/app/data/profile";
+import { profile, workflowSteps } from "@/app/data/profile";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -35,10 +35,21 @@ export default function AboutSection() {
 
       const items = contentRef.current?.querySelectorAll("[data-abt]");
       if (items) {
+        // About: clip-path reveal + scale — unique pattern
+        gsap.set(items, { clipPath: "inset(0 100% 0 0)" });
+        tl.to(items, {
+          clipPath: "inset(0 0% 0 0)",
+          scale: 1,
+          opacity: 1,
+          duration: 0.5,
+          stagger: 0.08,
+          ease: "power4.inOut",
+        });
         tl.fromTo(
           items,
-          { y: 50, opacity: 0, scale: 0.96 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.35, stagger: 0.06, ease: "power3.out" }
+          { scale: 0.97 },
+          { scale: 1, duration: 0.01 },
+          0
         );
       }
 
@@ -96,10 +107,25 @@ export default function AboutSection() {
 
             {/* Right */}
             <div className="space-y-5">
+              {/* Stats */}
+              <div data-abt className="grid grid-cols-3 gap-3">
+                {[
+                  { value: "3+", label: "Años exp." },
+                  { value: "5", label: "Empresas" },
+                  { value: "20+", label: "Proyectos" },
+                ].map(({ value, label }) => (
+                  <div key={label} className="glass-card rounded-xl p-4 text-center">
+                    <p className="text-2xl md:text-3xl font-extrabold gradient-text">{value}</p>
+                    <p className="text-xs text-muted mt-1 font-mono">{label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Filosofía de trabajo */}
               <div data-abt className="glass-card rounded-2xl p-6 space-y-5">
                 <h3 className="text-neon font-bold text-lg flex items-center gap-2">
                   <Code size={20} weight="Outline" />
-                  Filosofía de trabajo
+                  Filosofía
                 </h3>
                 <div className="space-y-4">
                   {[
@@ -114,20 +140,43 @@ export default function AboutSection() {
                   ))}
                 </div>
               </div>
+            </div>
+          </div>
 
-              {/* Stats */}
-              <div data-abt className="grid grid-cols-3 gap-3">
-                {[
-                  { value: "3+", label: "Años exp." },
-                  { value: "5", label: "Empresas" },
-                  { value: "20+", label: "Proyectos" },
-                ].map(({ value, label }) => (
-                  <div key={label} className="glass-card rounded-xl p-4 text-center">
-                    <p className="text-2xl md:text-3xl font-extrabold gradient-text">{value}</p>
-                    <p className="text-xs text-muted mt-1 font-mono">{label}</p>
+          {/* ── Cómo trabajo ── */}
+          <div data-abt className="mt-20">
+            <div className="mb-8 text-center">
+              <p className="font-mono text-xs tracking-[.3em] text-neon mb-3">Cómo trabajo</p>
+              <h3 className="text-2xl md:text-3xl font-extrabold text-foreground">
+                Mi <span className="gradient-text">proceso</span>
+              </h3>
+              <p className="text-sm text-muted mt-2 max-w-xl mx-auto">
+                De la idea a producción: cómo transformo requerimientos en software que escala.
+              </p>
+            </div>
+
+            <div className="relative grid md:grid-cols-4 gap-4 md:gap-6">
+              {/* Connector line on desktop */}
+              <div
+                className="hidden md:block absolute top-12 left-[calc(12.5%+1rem)] right-[calc(12.5%+1rem)] h-px bg-gradient-to-r from-neon/40 via-neon-purple/40 to-neon-green/40"
+                aria-hidden="true"
+              />
+
+              {workflowSteps.map((w, i) => (
+                <div
+                  key={w.step}
+                  className="glass-card rounded-2xl p-5 md:p-6 relative"
+                  style={{ animationDelay: `${i * 0.1}s` }}
+                >
+                  {/* Step circle */}
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neon/20 to-neon-purple/20 border border-neon/30 flex items-center justify-center mb-4 text-lg">
+                    {w.icon}
                   </div>
-                ))}
-              </div>
+                  <p className="font-mono text-[10px] tracking-widest text-neon/60 mb-1">{w.step}</p>
+                  <h4 className="font-bold text-foreground text-sm mb-2">{w.title}</h4>
+                  <p className="text-xs text-muted leading-relaxed">{w.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>

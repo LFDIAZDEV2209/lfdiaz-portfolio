@@ -1,18 +1,20 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight, Globe } from "reicon-react";
+import { ArrowRight, Globe, ChevronDown } from "reicon-react";
 import Image from "next/image";
 import { projects, profile } from "@/app/data/profile";
 import { getTechIcon } from "@/app/components/TechIcons";
+import GitHubStatsRow from "@/app/components/GitHubStatsRow";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function ProjectsSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -37,10 +39,11 @@ export default function ProjectsSection() {
 
       const items = contentRef.current?.querySelectorAll("[data-prj]");
       if (items) {
+        // Projects: staggered card flip with perspective — unique pattern
         tl.fromTo(
           items,
-          { y: 50, opacity: 0, scale: 0.95 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.35, stagger: 0.07, ease: "power3.out" }
+          { y: 60, opacity: 0, rotationX: 8, transformOrigin: "50% 0%" },
+          { y: 0, opacity: 1, rotationX: 0, duration: 0.5, stagger: 0.08, ease: "power4.out" }
         );
       }
 
@@ -70,8 +73,11 @@ export default function ProjectsSection() {
             </h2>
           </div>
 
+          {/* GitHub Stats Row */}
+          <GitHubStatsRow />
+
           <div className="grid md:grid-cols-2 gap-5">
-            {projects.map((p) => (
+            {projects.map((p, idx) => (
               <div
                 key={p.title}
                 data-prj
@@ -113,10 +119,75 @@ export default function ProjectsSection() {
                     )}
                   </div>
 
-                  <h3 className="text-lg font-bold text-foreground mb-2">{p.title}</h3>
+                  <h3 className="text-lg font-bold text-foreground mb-1">{p.title}</h3>
+
+                  {/* Impact badge */}
+                  {p.impact && (
+                    <span className="inline-flex items-center gap-1 font-mono text-[10px] text-neon bg-neon/10 px-2 py-0.5 rounded-full mb-2">
+                      {p.impact}
+                    </span>
+                  )}
+
                   <p className="text-sm text-muted leading-relaxed mb-4 flex-1">
                     {p.description}
                   </p>
+
+                  {/* Expandable case study */}
+                  {(p.problem || p.solution) && (
+                    <div className="mb-4">
+                      <button
+                        onClick={() =>
+                          setExpandedIndex(expandedIndex === idx ? null : idx)
+                        }
+                        aria-expanded={expandedIndex === idx}
+                        className="inline-flex items-center gap-1.5 text-xs text-neon/70 hover:text-neon transition-colors cursor-pointer group"
+                      >
+                        <ChevronDown
+                          size={12}
+                          weight="Outline"
+                          className={`transition-transform duration-300 ${
+                            expandedIndex === idx ? "rotate-180" : ""
+                          }`}
+                        />
+                        {expandedIndex === idx
+                          ? "Ocultar caso de estudio"
+                          : "Ver caso de estudio"}
+                      </button>
+
+                      <div
+                        className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                          expandedIndex === idx
+                            ? "max-h-96 opacity-100 mt-3"
+                            : "max-h-0 opacity-0"
+                        }`}
+                      >
+                        <div className="space-y-3 p-4 rounded-xl bg-white/5 border border-white/5">
+                          {p.problem && (
+                            <div>
+                              <p className="font-mono text-[10px] tracking-wider text-red-400/70 mb-1 flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-400/50" />
+                                Problema
+                              </p>
+                              <p className="text-xs text-muted leading-relaxed">
+                                {p.problem}
+                              </p>
+                            </div>
+                          )}
+                          {p.solution && (
+                            <div>
+                              <p className="font-mono text-[10px] tracking-wider text-neon/70 mb-1 flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-neon/50" />
+                                Solución
+                              </p>
+                              <p className="text-xs text-muted leading-relaxed">
+                                {p.solution}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Tech tags with icons */}
                   <div className="flex flex-wrap gap-2 mb-4">

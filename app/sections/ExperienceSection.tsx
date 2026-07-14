@@ -35,10 +35,13 @@ export default function ExperienceSection() {
 
       const items = contentRef.current?.querySelectorAll("[data-exp]");
       if (items) {
+        // Experience: alternating sides + perspective rotate — unique pattern
+        const evenItems = contentRef.current?.querySelectorAll("[data-exp]:nth-child(even)");
+        const oddItems = contentRef.current?.querySelectorAll("[data-exp]:nth-child(odd)");
         tl.fromTo(
           items,
-          { x: -50, opacity: 0, scale: 0.95 },
-          { x: 0, opacity: 1, scale: 1, duration: 0.4, stagger: 0.12, ease: "power3.out" }
+          { opacity: 0, scale: 0.92, rotateY: 5 },
+          { opacity: 1, scale: 1, rotateY: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" }
         );
       }
 

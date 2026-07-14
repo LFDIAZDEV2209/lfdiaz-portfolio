@@ -35,10 +35,11 @@ export default function EducationSection() {
 
       const items = contentRef.current?.querySelectorAll("[data-edu]");
       if (items) {
+        // Education: blur reveal + scale — unique pattern
         tl.fromTo(
           items,
-          { y: 40, opacity: 0, scale: 0.95 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.35, stagger: 0.1, ease: "power3.out" }
+          { filter: "blur(8px)", opacity: 0, scale: 0.9 },
+          { filter: "blur(0px)", opacity: 1, scale: 1, duration: 0.5, stagger: 0.12, ease: "power2.out" }
         );
       }
 

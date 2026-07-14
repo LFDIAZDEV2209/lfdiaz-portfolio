@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTheme } from "@/app/hooks/useTheme";
+import { FiSun, FiMoon } from "react-icons/fi";
 
 const SECTIONS = [
   { id: "hero", label: "Inicio" },
@@ -13,6 +15,7 @@ const SECTIONS = [
 ];
 
 export default function Navbar() {
+  const { theme, toggle } = useTheme();
   const [active, setActive] = useState("hero");
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
@@ -64,6 +67,19 @@ export default function Navbar() {
 
           {/* Links */}
           <div className="flex items-center gap-1">
+            {/* Theme toggle */}
+            <button
+              onClick={toggle}
+              aria-label={theme === "dark" ? "Activar modo claro" : "Activar modo oscuro"}
+              className="p-1.5 rounded-lg text-white/30 hover:text-neon hover:bg-white/5 transition-all duration-300 cursor-pointer mr-1"
+            >
+              {theme === "dark" ? (
+                <FiSun size={14} />
+              ) : (
+                <FiMoon size={14} />
+              )}
+            </button>
+            <span className="w-px h-4 bg-white/10 mr-1" />
             {SECTIONS.slice(1).map(({ id, label }) => (
               <a
                 key={id}

@@ -16,6 +16,78 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html { color-scheme: dark; }
+html.light { color-scheme: light; }
+
+/* ── Light mode overrides ── */
+html.light {
+  --color-background: #f5f5fa;
+  --color-foreground: #1a1a2e;
+  --color-muted: #5a5a7a;
+  --color-neon: #0891b2;
+  --color-neon-glow: rgba(8, 145, 178, 0.2);
+  --color-neon-purple: #7c3aed;
+  --color-neon-green: #0d9488;
+  --color-card: rgba(0, 0, 0, 0.04);
+  --color-card-hover: rgba(0, 0, 0, 0.08);
+  --color-card-border: rgba(0, 0, 0, 0.08);
+  --color-card-border-hover: rgba(8, 145, 178, 0.3);
+}
+html.light .glass-card {
+  background: rgba(0,0,0,.04);
+  border-color: rgba(0,0,0,.08);
+  box-shadow: 0 4px 24px rgba(0,0,0,.06), inset 0 1px 0 rgba(255,255,255,.5);
+}
+html.light .glass-card:hover {
+  background: rgba(0,0,0,.08);
+  border-color: rgba(8,145,178,.3);
+  box-shadow: 0 8px 48px rgba(0,0,0,.1), 0 0 40px rgba(8,145,178,.08);
+}
+html.light .btn-neon {
+  border-color: rgba(8,145,178,.4);
+  color: #0891b2;
+  background: linear-gradient(135deg, rgba(8,145,178,.1), rgba(124,58,237,.08));
+}
+html.light .btn-neon:hover {
+  background: linear-gradient(135deg, rgba(8,145,178,.18), rgba(124,58,237,.12));
+  border-color: rgba(8,145,178,.6);
+  box-shadow: 0 0 40px rgba(8,145,178,.15);
+}
+html.light .gradient-text {
+  background: linear-gradient(135deg, #0891b2, #7c3aed, #0d9488);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+html.light .shimmer-text {
+  background: linear-gradient(90deg, #1a1a2e 20%, #0891b2 40%, #7c3aed 60%, #1a1a2e 80%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+html.light body::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 0% 20%, rgba(8,145,178,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 100% 40%, rgba(124,58,237,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 80%, rgba(13,148,136,.04) 0%, transparent 50%);
+}
+html.light .skip-link {
+  background: #ffffff;
+  color: #0891b2;
+  border-color: #0891b2;
+}
+html.light input,
+html.light textarea {
+  background: rgba(0,0,0,.03) !important;
+  border-color: rgba(0,0,0,.1) !important;
+  color: #1a1a2e !important;
+}
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: rgba(0,0,0,.25) !important;
+}
+
 @layer base {
   * { scrollbar-width: thin; scrollbar-color: rgba(0,240,255,.3) transparent; }
   ::-webkit-scrollbar { width: 6px; }
@@ -228,6 +300,17 @@ body::before {
 }
 .skip-link:focus {
   transform: translateY(0);
+}
+
+/* ── Transition for theme switching ── */
+html,
+html *,
+html *::before,
+html *::after {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  html * { transition-duration: 0.01ms !important; }
 }
 
 /* ── Reduce motion ── */

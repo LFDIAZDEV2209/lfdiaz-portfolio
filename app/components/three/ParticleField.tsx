@@ -5,7 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { MeshSurfaceSampler } from "three/addons/math/MeshSurfaceSampler.js";
 import * as THREE from "three";
 
-const PARTICLE_COUNT = 8000;
+const PARTICLE_COUNT = 3500;
 const CURSOR_STRENGTH = 0.3;
 
 const vertexShader = `
@@ -153,6 +153,25 @@ export default function ParticleField() {
     return () => window.removeEventListener("pointermove", handlePointerMove);
   }, [handlePointerMove]);
 
+  // ── Easter egg: arrow keys push particles ──
+  const arrowRef = useRef({ x: 0, y: 0 });
+  const targetArrowRef = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      const step = 0.15;
+      const isArrow = e.key.startsWith("Arrow");
+      if (!isArrow) return;
+      e.preventDefault();
+      if (e.key === "ArrowUp") targetArrowRef.current.y = Math.min(targetArrowRef.current.y + step, 1);
+      if (e.key === "ArrowDown") targetArrowRef.current.y = Math.max(targetArrowRef.current.y - step, -1);
+      if (e.key === "ArrowLeft") targetArrowRef.current.x = Math.max(targetArrowRef.current.x - step, -1);
+      if (e.key === "ArrowRight") targetArrowRef.current.x = Math.min(targetArrowRef.current.x + step, 1);
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
+
   // ── 4. CPU position recalc every frame ──
   useFrame((_, delta) => {
     if (!pointsRef.current || !materialRef.current || !geometryRef.current) return;
@@ -178,8 +197,19 @@ export default function ParticleField() {
       0.08 *
       clampedDelta;
 
+    // Spring arrow push toward target (easter egg)
+    arrowRef.current.x += (targetArrowRef.current.x - arrowRef.current.x) * 0.06 * clampedDelta;
+    arrowRef.current.y += (targetArrowRef.current.y - arrowRef.current.y) * 0.06 * clampedDelta;
+    // Slowly decay arrow push when keys are released
+    targetArrowRef.current.x *= 0.995;
+    targetArrowRef.current.y *= 0.995;
+
     const cx = cursorRef.current.x * 0.4;
     const cy = -cursorRef.current.y * 0.4;
+
+    // Arrow-driven field offset (easter egg)
+    const arrowOffsetX = arrowRef.current.x * 0.5;
+    const arrowOffsetY = arrowRef.current.y * 0.5;
 
     // ── Pure decorative float — no scroll morph ──
     // Each particle orbits gently around its anchor using its unique phase.
@@ -207,8 +237,8 @@ export default function ParticleField() {
       const dy = py - cy;
       const dist = Math.sqrt(dx * dx + dy * dy);
       const influence = Math.exp(-dist * 0.8) * CURSOR_STRENGTH;
-      px += cx * influence;
-      py += cy * influence;
+      px += cx * influence + arrowOffsetX;
+      py += cy * influence + arrowOffsetY;
 
       positionArray[i3] = px;
       positionArray[i3 + 1] = py;

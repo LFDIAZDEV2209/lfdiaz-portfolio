@@ -1,16 +1,43 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Send, MapPoint } from "reicon-react";
+import { Send, MapPoint, Check } from "reicon-react";
 import { profile } from "@/app/data/profile";
+import emailjs from "@emailjs/browser";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formRef.current) return;
+    setSending(true);
+    setError("");
+
+    try {
+      await emailjs.sendForm(
+        "service_xxxxx", // ⬅️ Reemplazar con tu Service ID de EmailJS
+        "template_xxxxx", // ⬅️ Reemplazar con tu Template ID
+        formRef.current,
+        "user_xxxxx" // ⬅️ Reemplazar con tu Public Key
+      );
+      setSent(true);
+      formRef.current.reset();
+    } catch {
+      setError("No se pudo enviar. Escríbeme directamente a diazf7583@gmail.com");
+    } finally {
+      setSending(false);
+    }
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -35,10 +62,11 @@ export default function ContactSection() {
 
       const items = contentRef.current?.querySelectorAll("[data-ct]");
       if (items) {
+        // Contact: slide up + subtle bounce — unique pattern
         tl.fromTo(
           items,
-          { y: 40, opacity: 0, scale: 0.96 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.3, stagger: 0.07, ease: "power3.out" }
+          { y: 50, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.4, stagger: 0.06, ease: "back.out(1.4)" }
         );
       }
 
@@ -72,8 +100,9 @@ export default function ContactSection() {
             {/* Form */}
             <div data-ct>
               <form
+                ref={formRef}
                 className="glass-card rounded-2xl p-6 space-y-5"
-                onSubmit={(e) => e.preventDefault()}
+                onSubmit={handleSubmit}
               >
                 <div className="space-y-1.5">
                   <label htmlFor="contact-name" className="font-mono text-[11px] tracking-wider text-white/40 uppercase">Nombre</label>
@@ -102,13 +131,33 @@ export default function ContactSection() {
                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-foreground text-sm placeholder:text-white/20 focus:outline-none focus:border-neon/40 focus:ring-1 focus:ring-neon/20 transition-all resize-none"
                   />
                 </div>
-                <button
-                  type="submit"
-                  className="btn-neon w-full flex items-center justify-center gap-2 text-sm"
-                >
-                  Enviar Mensaje
-                  <Send size={16} weight="Outline" />
-                </button>
+                {error && (
+                  <p className="text-red-400 text-xs font-mono text-center">{error}</p>
+                )}
+                {sent ? (
+                  <div className="flex flex-col items-center gap-3 py-3">
+                    <div className="flex items-center justify-center gap-2 text-neon text-sm font-medium">
+                      <Check size={18} weight="Outline" />
+                      ¡Mensaje enviado con éxito!
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setSent(false)}
+                      className="text-xs text-muted hover:text-neon transition-colors font-mono cursor-pointer"
+                    >
+                      Enviar otro mensaje →
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={sending}
+                    className={`btn-neon w-full flex items-center justify-center gap-2 text-sm ${sending ? "opacity-60 cursor-not-allowed" : ""}`}
+                  >
+                    {sending ? "Enviando..." : "Enviar Mensaje"}
+                    <Send size={16} weight="Outline" />
+                  </button>
+                )}
               </form>
             </div>
 

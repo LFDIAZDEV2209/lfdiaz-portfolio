@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { ArrowRight, ArrowDown } from "reicon-react";
+import { ArrowRight, ArrowDown, User } from "reicon-react";
 import Image from "next/image";
 import Scene3D from "@/app/components/three/Scene3D";
 import FloatingGeometry from "@/app/components/three/FloatingGeometry";
@@ -10,6 +10,7 @@ import FloatingGeometry from "@/app/components/three/FloatingGeometry";
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [photoError, setPhotoError] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -61,14 +62,21 @@ export default function HeroSection() {
         {/* Photo */}
         <div data-hero className="flex justify-center lg:justify-end order-2 lg:order-1">
           <div className="photo-ring w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 relative overflow-hidden rounded-full">
-            <Image
-              src="/profile-photo.jpg"
-              alt="Luis Felipe Díaz"
-              width={320}
-              height={320}
-              className="w-full h-full object-cover rounded-full"
-              priority
-            />
+            {photoError ? (
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-neon/20 to-neon-purple/20 flex items-center justify-center">
+                <User size={80} weight="Outline" className="text-foreground/30" />
+              </div>
+            ) : (
+              <Image
+                src="/profile-photo.jpg"
+                alt="Luis Felipe Díaz"
+                width={320}
+                height={320}
+                className="w-full h-full object-cover rounded-full"
+                priority
+                onError={() => setPhotoError(true)}
+              />
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent rounded-full" />
           </div>
         </div>

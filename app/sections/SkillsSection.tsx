@@ -49,10 +49,11 @@ export default function SkillsSection() {
 
       const items = contentRef.current?.querySelectorAll("[data-sk]");
       if (items) {
+        // Skills: stagger + flip + hue shift — unique pattern
         tl.fromTo(
           items,
-          { y: 40, opacity: 0, scale: 0.95 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.3, stagger: 0.035, ease: "power3.out" }
+          { y: -30, opacity: 0, rotation: -2, scale: 0.95 },
+          { y: 0, opacity: 1, rotation: 0, scale: 1, duration: 0.35, stagger: 0.04, ease: "back.out(1.2)" }
         );
       }
 

@@ -4,13 +4,10 @@ import { useRef, useMemo, useEffect, useCallback } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { MeshSurfaceSampler } from "three/addons/math/MeshSurfaceSampler.js";
 import * as THREE from "three";
-import { scrollState } from "@/app/lib/scrollState";
 
 const PARTICLE_COUNT = 8000;
-const SPRING_STIFFNESS = 0.08;
+const CURSOR_STRENGTH = 0.3;
 
-// Simpler vertex shader — only handles point rendering, colors & alpha.
-// All position displacement is now done on the CPU in useFrame.
 const vertexShader = `
   attribute vec3 aColor;
   attribute float aSize;
@@ -28,11 +25,9 @@ const vertexShader = `
     vec4 projPosition = projectionMatrix * viewPosition;
     gl_Position = projPosition;
 
-    // Pulsing alpha based on particle Y to add depth
     float pulse = 0.7 + 0.3 * sin(position.y * 1.5 + uTime * 0.4);
     vAlpha = pulse;
 
-    // Size attenuation
     gl_PointSize = aSize * uPixelRatio * (2.5 / -viewPosition.z);
     gl_PointSize = clamp(gl_PointSize, 0.5, 20.0);
   }
@@ -72,13 +67,15 @@ export default function ParticleField() {
 
   const { size, viewport } = useThree();
 
-  // ── 1. Sample anchor positions + colors + sizes (once) ───────────
+  // ── 1. Sample anchor positions + colors + sizes + float offsets ──
   const anchorRef = useRef<Float32Array | null>(null);
+  const floatSeedRef = useRef<Float32Array | null>(null);
 
-  const { colors, sizes, anchorPositions } = useMemo(() => {
+  const { colors, sizes, anchorPositions, floatSeeds } = useMemo(() => {
     const pos = new Float32Array(PARTICLE_COUNT * 3);
     const col = new Float32Array(PARTICLE_COUNT * 3);
     const siz = new Float32Array(PARTICLE_COUNT);
+    const seed = new Float32Array(PARTICLE_COUNT);
 
     const geo = new THREE.TorusKnotGeometry(1.2, 0.4, 128, 32);
     const mat = new THREE.MeshBasicMaterial();
@@ -96,10 +93,10 @@ export default function ParticleField() {
       new THREE.Color("#06b6d4"),
     ];
 
-    let seed = 42;
+    let rngSeed = 42;
     const rng = () => {
-      seed = (seed * 16807) % 2147483647;
-      return (seed - 1) / 2147483646;
+      rngSeed = (rngSeed * 16807) % 2147483647;
+      return (rngSeed - 1) / 2147483646;
     };
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -115,20 +112,26 @@ export default function ParticleField() {
       col[i3 + 2] = c.b;
 
       siz[i] = rng() * 4 + 1.5;
+      seed[i] = rng() * Math.PI * 2; // unique phase per particle
     }
 
     geo.dispose();
     mat.dispose();
 
-    return { colors: col, sizes: siz, anchorPositions: pos };
+    return {
+      colors: col,
+      sizes: siz,
+      anchorPositions: pos,
+      floatSeeds: seed,
+    };
   }, []);
 
-  // Store anchor positions in a ref for fast access in useFrame
   useEffect(() => {
     anchorRef.current = anchorPositions;
-  }, [anchorPositions]);
+    floatSeedRef.current = floatSeeds;
+  }, [anchorPositions, floatSeeds]);
 
-  // ── 2. Uniforms (only time & pixel ratio; scroll/cursor are CPU) ──
+  // ── 2. Uniforms ──
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -137,7 +140,7 @@ export default function ParticleField() {
     [size.width, viewport.width]
   );
 
-  // ── 3. Cursor tracking ───────────────────────────────────────────
+  // ── 3. Cursor tracking ──
   const handlePointerMove = useCallback((e: PointerEvent) => {
     targetCursorRef.current = {
       x: (e.clientX / window.innerWidth) * 2 - 1,
@@ -150,59 +153,60 @@ export default function ParticleField() {
     return () => window.removeEventListener("pointermove", handlePointerMove);
   }, [handlePointerMove]);
 
-  // ── 4. CPU position recalculation every frame ────────────────────
+  // ── 4. CPU position recalc every frame ──
   useFrame((_, delta) => {
     if (!pointsRef.current || !materialRef.current || !geometryRef.current) return;
 
     const posAttr = geometryRef.current.attributes.position;
     const positionArray = posAttr.array as Float32Array;
     const anchors = anchorRef.current;
-    if (!anchors) return;
+    const seeds = floatSeedRef.current;
+    if (!anchors || !seeds) return;
 
-    // Use THREE.Timer instead of deprecated THREE.Clock
     timerRef.current.update();
     const time = timerRef.current.getElapsed() * 0.5;
 
     const clampedDelta = Math.min(delta * 60, 1);
 
-    // Spring cursor
+    // Spring cursor toward target
     cursorRef.current.x +=
       (targetCursorRef.current.x - cursorRef.current.x) *
-      SPRING_STIFFNESS *
+      0.08 *
       clampedDelta;
     cursorRef.current.y +=
       (targetCursorRef.current.y - cursorRef.current.y) *
-      SPRING_STIFFNESS *
+      0.08 *
       clampedDelta;
 
-    // Read GSAP-driven scroll progress (smooth)
-    const sp = scrollState.progress;
-    const scrollOffset = sp * 2.0;
-
-    // ── CPU recalc (single pass: scroll morph + cursor push combined) ─
     const cx = cursorRef.current.x * 0.4;
     const cy = -cursorRef.current.y * 0.4;
 
+    // ── Pure decorative float — no scroll morph ──
+    // Each particle orbits gently around its anchor using its unique phase.
+    // Amplitude increases slightly with distance from origin for a breathing effect.
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const i3 = i * 3;
       const ax = anchors[i3];
       const ay = anchors[i3 + 1];
       const az = anchors[i3 + 2];
 
-      // Scroll: particles morph from torus knot → spread cloud
-      const waveY = Math.sin(ax * 0.5 + time * 0.3 + scrollOffset) * 0.3 * sp;
-      const waveZ = Math.cos(ay * 0.5 + time * 0.2 + scrollOffset) * 0.3 * sp;
-      const morphLerp = 1 - sp; // 1 at top, 0 at bottom
+      const phase = seeds[i];
+      const distFactor = 0.5 + Math.abs(ax) * 0.3;
 
-      let px = ax * (morphLerp + sp * 1.5) + waveY * 0.3;
-      let py = ay * (morphLerp + sp * 1.2) + waveY + sp * 0.5;
-      const pz = az * (morphLerp + sp * 1.3) + waveZ;
+      // Gentle 3D float: each axis gets a slightly different frequency
+      const floatX = Math.sin(time * 0.6 + phase) * 0.1 * distFactor;
+      const floatY = Math.sin(time * 0.5 + phase * 1.3) * 0.1 * distFactor;
+      const floatZ = Math.cos(time * 0.4 + phase * 0.7) * 0.1 * distFactor;
+
+      let px = ax + floatX;
+      let py = ay + floatY;
+      const pz = az + floatZ;
 
       // Cursor push: particles near the cursor get displaced
       const dx = px - cx;
       const dy = py - cy;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      const influence = Math.exp(-dist * 0.8) * 0.3;
+      const influence = Math.exp(-dist * 0.8) * CURSOR_STRENGTH;
       px += cx * influence;
       py += cy * influence;
 
@@ -216,9 +220,9 @@ export default function ParticleField() {
     // Update uniforms
     materialRef.current.uniforms.uTime.value = time;
 
-    // Gentle rotation
-    pointsRef.current.rotation.y += delta * 0.05;
-    pointsRef.current.rotation.x = Math.sin(time * 0.1) * 0.05;
+    // Gentle rotation — very subtle for a calm float feel
+    pointsRef.current.rotation.y += delta * 0.04;
+    pointsRef.current.rotation.x = Math.sin(time * 0.08) * 0.03;
   });
 
   return (

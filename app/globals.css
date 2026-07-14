@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #050510;
+  --color-background: #08081a;
   --color-foreground: #f0f0f5;
-  --color-muted: #8888a0;
+  --color-muted: #c0c0d8;
   --color-neon: #00f0ff;
   --color-neon-glow: rgba(0, 240, 255, 0.2);
   --color-neon-purple: #a855f7;
   --color-neon-green: #22d3ee;
-  --color-card: rgba(255, 255, 255, 0.05);
-  --color-card-hover: rgba(255, 255, 255, 0.08);
-  --color-card-border: rgba(255, 255, 255, 0.08);
-  --color-card-border-hover: rgba(0, 240, 255, 0.25);
+  --color-card: rgba(255, 255, 255, 0.08);
+  --color-card-hover: rgba(255, 255, 255, 0.14);
+  --color-card-border: rgba(255, 255, 255, 0.1);
+  --color-card-border-hover: rgba(0, 240, 255, 0.35);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -21,6 +21,25 @@
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(0,240,255,.3); border-radius: 3px; }
+}
+
+/* ── Background sutil con gradiente animado ── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -20;
+  animation: bgDrift 20s ease-in-out infinite alternate;
+  background:
+    radial-gradient(ellipse 80% 60% at 0% 20%, rgba(0,240,255,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 100% 40%, rgba(168,85,247,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 80%, rgba(34,211,238,.06) 0%, transparent 50%);
+}
+
+@keyframes bgDrift {
+  0% { transform: scale(1) translate(0, 0); }
+  50% { transform: scale(1.05) translate(-1%, 1%); }
+  100% { transform: scale(1) translate(1%, -1%); }
 }
 
 /* ── Scanline ── */
@@ -38,10 +57,17 @@
   background-repeat: repeat; background-size: 256px;
 }
 
-/* ── Glow text ── */
+/* ── Text shadows for readability ── */
 .glow-text {
   text-shadow: 0 0 20px rgba(0,240,255,.6), 0 0 40px rgba(0,240,255,.3), 0 0 80px rgba(0,240,255,.1);
 }
+.text-shadow-neon {
+  text-shadow: 0 2px 20px rgba(0,0,0,.6), 0 4px 40px rgba(0,0,0,.4);
+}
+.text-shadow-subtle {
+  text-shadow: 0 1px 12px rgba(0,0,0,.5);
+}
+
 .glow-border {
   box-shadow: 0 0 20px rgba(0,240,255,.1), inset 0 0 20px rgba(0,240,255,.05);
 }
@@ -58,25 +84,27 @@
   background-clip: text;
 }
 
-/* ── Glass card (más opaco para mejor contraste) ── */
+/* ── Glass card con más profundidad ── */
 .glass-card {
-  background: rgba(255,255,255,.06);
+  background: rgba(255,255,255,.08);
   backdrop-filter: blur(24px);
-  border: 1px solid rgba(255,255,255,.08);
-  transition: all .4s cubic-bezier(.25,.46,.45,.94);
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 4px 24px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.06);
+  transition: all .5s cubic-bezier(.25,.46,.45,.94);
 }
 .glass-card:hover {
-  background: rgba(255,255,255,.1);
-  border-color: rgba(0,240,255,.25);
-  box-shadow: 0 8px 40px rgba(0,240,255,.12);
-  transform: translateY(-2px);
+  background: rgba(255,255,255,.14);
+  border-color: rgba(0,240,255,.35);
+  box-shadow: 0 8px 48px rgba(0,0,0,.3), 0 0 40px rgba(0,240,255,.08), inset 0 1px 0 rgba(255,255,255,.08);
+  transform: translateY(-3px);
 }
 
 /* ── Glass variant más sólida ── */
 .glass-solid {
-  background: rgba(255,255,255,.08);
+  background: rgba(255,255,255,.1);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 4px 20px rgba(0,0,0,.15);
 }
 
 /* ── Neon button ── */
@@ -84,18 +112,19 @@
   position: relative;
   padding: .75rem 2rem;
   border-radius: 9999px;
-  background: linear-gradient(135deg, rgba(0,240,255,.12), rgba(168,85,247,.08));
-  border: 1px solid rgba(0,240,255,.25);
+  background: linear-gradient(135deg, rgba(0,240,255,.15), rgba(168,85,247,.1));
+  border: 1px solid rgba(0,240,255,.3);
   color: #00f0ff;
   font-weight: 600;
+  cursor: pointer;
   overflow: hidden;
   transition: all .3s ease;
 }
 .btn-neon:hover {
-  background: linear-gradient(135deg, rgba(0,240,255,.2), rgba(168,85,247,.15));
-  border-color: rgba(0,240,255,.5);
-  box-shadow: 0 0 40px rgba(0,240,255,.15);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, rgba(0,240,255,.25), rgba(168,85,247,.18));
+  border-color: rgba(0,240,255,.6);
+  box-shadow: 0 0 40px rgba(0,240,255,.2), 0 0 60px rgba(0,240,255,.08);
+  transform: translateY(-2px);
 }
 .btn-neon::after {
   content: "";

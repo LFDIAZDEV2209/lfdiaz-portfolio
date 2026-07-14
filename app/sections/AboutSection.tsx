@@ -14,20 +14,22 @@ export default function AboutSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      const pinEnd = "+=80%";
+
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
-        end: "+=80%",
+        end: pinEnd,
         pin: true,
-        scrub: 1,
+        scrub: 0.7,
       });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=80%",
-          scrub: 1,
+          end: pinEnd,
+          scrub: 0.7,
         },
       });
 
@@ -35,16 +37,16 @@ export default function AboutSection() {
       if (items) {
         tl.fromTo(
           items,
-          { y: 40, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out" }
+          { y: 50, opacity: 0, scale: 0.96 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.35, stagger: 0.06, ease: "power3.out" }
         );
       }
 
-      // Continuous parallax — keeps section alive during scroll
+      // Continuous parallax — extra dynamic for alive feel
       tl.fromTo(
         contentRef.current,
-        { yPercent: 3 },
-        { yPercent: -3, ease: "none" },
+        { yPercent: 5 },
+        { yPercent: -5, ease: "none" },
         0
       );
     }, sectionRef);

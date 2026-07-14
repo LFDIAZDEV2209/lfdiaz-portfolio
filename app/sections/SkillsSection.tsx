@@ -28,20 +28,22 @@ export default function SkillsSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      const pinEnd = "+=100%";
+
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
-        end: "+=100%",
+        end: pinEnd,
         pin: true,
-        scrub: 1,
+        scrub: 0.7,
       });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=100%",
-          scrub: 1,
+          end: pinEnd,
+          scrub: 0.7,
         },
       });
 
@@ -49,16 +51,16 @@ export default function SkillsSection() {
       if (items) {
         tl.fromTo(
           items,
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.4, stagger: 0.03, ease: "power2.out" }
+          { y: 40, opacity: 0, scale: 0.95 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.3, stagger: 0.035, ease: "power3.out" }
         );
       }
 
       // Continuous parallax — keeps section alive during scroll
       tl.fromTo(
         contentRef.current,
-        { yPercent: 3 },
-        { yPercent: -3, ease: "none" },
+        { yPercent: 5 },
+        { yPercent: -5, ease: "none" },
         0
       );
     }, sectionRef);

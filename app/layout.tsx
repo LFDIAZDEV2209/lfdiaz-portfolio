@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import CursorEffect from "./components/CursorEffect";
-import GSAPScrollInit from "./components/GSAPScrollInit";
 import LenisSmoothScroll from "./components/LenisSmoothScroll";
 import Navbar from "./components/Navbar";
 import LoadingScreen from "./components/LoadingScreen";
+import ReadingProgressBar from "./components/ReadingProgressBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,8 +57,8 @@ export default function RootLayout({
         <div className="scanline" />
         <div className="noise-overlay" />
         <CursorEffect />
-        <GSAPScrollInit />
         <LenisSmoothScroll />
+        <ReadingProgressBar />
         <LoadingScreen />
         <Navbar />
         <main id="main-content">

@@ -77,20 +77,20 @@ export default function HeroSection() {
         <div className="order-1 lg:order-2 text-center lg:text-left">
           <p
             data-hero
-            className="font-mono text-xs md:text-sm tracking-[.3em] uppercase text-neon mb-4"
+            className="font-mono text-xs md:text-sm tracking-[.3em] uppercase text-neon mb-4 text-shadow-subtle"
           >
             Full Stack Developer
           </p>
 
           <h1 data-hero className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[0.9] mb-6">
-            <span className="shimmer-text">Luis Felipe</span>
+            <span className="shimmer-text text-shadow-neon">Luis Felipe</span>
             <br />
-            <span className="text-foreground">Díaz</span>
+            <span className="text-foreground text-shadow-neon">Díaz</span>
           </h1>
 
           <p
             data-hero
-            className="text-base md:text-lg text-muted font-light leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8"
+            className="text-base md:text-lg text-muted font-light leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8 text-shadow-subtle"
           >
             Arquitectura limpia · Código que impacta
             <br />
@@ -112,7 +112,7 @@ export default function HeroSection() {
             </button>
             <button
               onClick={() => scrollTo("contact")}
-              className="px-6 py-3 rounded-full border border-white/15 text-foreground/70 font-medium text-sm hover:bg-white/5 hover:border-white/25 transition-all duration-300 flex items-center gap-2"
+              className="px-6 py-3 rounded-full border border-white/15 text-foreground/70 font-medium text-sm hover:bg-white/5 hover:border-white/25 transition-all duration-300 flex items-center gap-2 cursor-pointer"
             >
               Contáctame
               <ArrowRight size={16} weight="Outline" />

@@ -16,20 +16,22 @@ export default function ProjectsSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      const pinEnd = "+=120%";
+
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
-        end: "+=120%",
+        end: pinEnd,
         pin: true,
-        scrub: 1,
+        scrub: 0.7,
       });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=120%",
-          scrub: 1,
+          end: pinEnd,
+          scrub: 0.7,
         },
       });
 
@@ -37,16 +39,16 @@ export default function ProjectsSection() {
       if (items) {
         tl.fromTo(
           items,
-          { y: 40, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.4, stagger: 0.08, ease: "power2.out" }
+          { y: 50, opacity: 0, scale: 0.95 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.35, stagger: 0.07, ease: "power3.out" }
         );
       }
 
       // Continuous parallax — keeps section alive during scroll
       tl.fromTo(
         contentRef.current,
-        { yPercent: 3 },
-        { yPercent: -3, ease: "none" },
+        { yPercent: 5 },
+        { yPercent: -5, ease: "none" },
         0
       );
     }, sectionRef);
@@ -140,7 +142,7 @@ export default function ProjectsSection() {
                         href={p.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-neon transition-colors"
+                        className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-neon transition-colors cursor-pointer"
                       >
                         <Globe size={12} weight="Outline" />
                         {p.urlLabel || "Demo"}
@@ -152,7 +154,7 @@ export default function ProjectsSection() {
                         href={p.url2}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-neon transition-colors"
+                        className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-neon transition-colors cursor-pointer"
                       >
                         <Globe size={12} weight="Outline" />
                         {p.urlLabel2 || "Admin"}
@@ -165,7 +167,7 @@ export default function ProjectsSection() {
                         target="_blank"
                         rel="noreferrer"
                         aria-label={`${p.title} - Frontend en GitHub`}
-                        className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-neon transition-colors"
+                        className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-neon transition-colors cursor-pointer"
                       >
                         <svg className="w-3.5 h-3.5" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
@@ -179,7 +181,7 @@ export default function ProjectsSection() {
                         target="_blank"
                         rel="noreferrer"
                         aria-label={`${p.title} - Backend en GitHub`}
-                        className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-neon transition-colors"
+                        className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-neon transition-colors cursor-pointer"
                       >
                         <svg className="w-3.5 h-3.5" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
@@ -200,7 +202,7 @@ export default function ProjectsSection() {
               target="_blank"
               rel="noreferrer"
               aria-label="Más proyectos en GitHub (abrir en nueva pestaña)"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/15 text-muted hover:border-neon/40 hover:text-neon transition-all duration-300 text-sm group"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/15 text-muted hover:border-neon/40 hover:text-neon transition-all duration-300 text-sm group cursor-pointer"
             >
               <svg className="w-4.5 h-4.5" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />

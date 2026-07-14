@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+/* ── GSAP performance: prevent layout thrashing ── */
+html { scroll-behavior: auto !important; }
+
+/* ── GPU-accelerated elements ── */
+.glass-card,
+.btn-neon,
+[data-hero],
+[data-abt],
+[data-sk],
+[data-exp],
+[data-prj],
+[data-tm],
+[data-edu],
+[data-ct] {
+  will-change: transform, opacity;
+}
+
 @theme inline {
   --color-background: #08081a;
   --color-foreground: #f0f0f5;
@@ -86,6 +103,118 @@ html.light textarea {
 html.light input::placeholder,
 html.light textarea::placeholder {
   color: rgba(0,0,0,.25) !important;
+}
+
+/* ── Light mode: scanline ── */
+html.light .scanline::after {
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.02) 2px, rgba(0,0,0,.02) 4px);
+}
+
+/* ── Light mode: noise ── */
+html.light .noise-overlay {
+  opacity: .012;
+}
+
+/* ── Light mode: text shadows (remove heavy dark shadows) ── */
+html.light .text-shadow-neon {
+  text-shadow: none;
+}
+html.light .text-shadow-subtle {
+  text-shadow: none;
+}
+html.light .glow-text {
+  text-shadow: 0 0 20px rgba(8,145,178,.3);
+}
+
+/* ── Light mode: photo ring ── */
+html.light .photo-ring {
+  box-shadow: 0 0 30px rgba(8,145,178,.2), 0 0 60px rgba(8,145,178,.08);
+}
+html.light .photo-ring::after {
+  border-color: rgba(8,145,178,.2);
+}
+
+/* ── Light mode: scrollbar ── */
+html.light * {
+  scrollbar-color: rgba(8,145,178,.2) transparent;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: rgba(8,145,178,.2);
+}
+
+/* ── Light mode: focus visible ── */
+html.light *:focus-visible {
+  outline-color: #0891b2;
+}
+
+/* ── Light mode: loading screen ── */
+html.light .loader-glow {
+  background: rgba(8,145,178,.05) !important;
+}
+
+/* ── Light mode: skill bars ── */
+html.light .skill-bar {
+  background: rgba(0,0,0,.06);
+}
+html.light .skill-bar-fill {
+  background: linear-gradient(90deg, #0891b2, #7c3aed);
+}
+
+/* ── Light mode: section glow backgrounds (only the blur/glow divs) ── */
+html.light section div.absolute.rounded-full {
+  opacity: 0.4;
+}
+
+/* ── Light mode: navbar glass-card ── */
+html.light nav .glass-card {
+  background: rgba(255,255,255,.85);
+  border-color: rgba(0,0,0,.08);
+  backdrop-filter: blur(24px);
+}
+
+/* ── Light mode: terminal emulator ── */
+html.light .terminal-overlay {
+  background: rgba(245,245,250,.95) !important;
+  backdrop-filter: blur(8px);
+}
+html.light .terminal-body {
+  background: rgba(245,245,250,.98) !important;
+  color: #1a1a2e !important;
+}
+html.light .terminal-titlebar {
+  background: rgba(235,235,240,.95) !important;
+  border-bottom-color: rgba(0,0,0,.06) !important;
+}
+html.light .terminal-body input {
+  color: #1a1a2e !important;
+  caret-color: #0891b2 !important;
+}
+html.light .terminal-body .terminal-prompt {
+  color: #0891b2 !important;
+}
+html.light .terminal-body .terminal-output {
+  color: #1a1a2e !important;
+}
+html.light .terminal-body .terminal-output-green {
+  color: #0d9488 !important;
+}
+html.light .terminal-body .terminal-output-dim {
+  color: #0891b2 !important;
+}
+html.light .terminal-cursor {
+  background: #0891b2 !important;
+}
+html.light .terminal-close-btn {
+  color: rgba(0,0,0,.2) !important;
+}
+html.light .terminal-close-btn:hover {
+  color: rgba(0,0,0,.5) !important;
+}
+
+/* ── Light mode: terminal hint mobile label ── */
+html.light .terminal-hint-label {
+  color: rgba(0,0,0,.4) !important;
+  background: rgba(255,255,255,.85) !important;
 }
 
 @layer base {

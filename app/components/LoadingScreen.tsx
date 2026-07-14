@@ -22,8 +22,8 @@ export default function LoadingScreen() {
     }
 
     // Minimum display time (prevents flash on fast loads)
-    const MIN_DISPLAY = 2000;
-    const MAX_DISPLAY = 6000;
+    const MIN_DISPLAY = 200;
+    const MAX_DISPLAY = 2000;
 
     const startTime = performance.now();
 

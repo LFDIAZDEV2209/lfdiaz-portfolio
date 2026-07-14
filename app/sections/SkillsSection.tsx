@@ -35,36 +35,46 @@ export default function SkillsSection() {
         start: "top top",
         end: pinEnd,
         pin: true,
-        scrub: 0.7,
+        scrub: 1,
         fastScrollEnd: true,
-      });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top bottom-=10%",
-          end: pinEnd,
-          scrub: 0.7,
-          fastScrollEnd: true,
-        },
+        invalidateOnRefresh: true,
       });
 
       const items = contentRef.current?.querySelectorAll("[data-sk]");
       if (items) {
-        // Skills: stagger + flip + hue shift — unique pattern
-        tl.fromTo(
+        gsap.fromTo(
           items,
           { y: -30, opacity: 0, rotation: -2, scale: 0.95 },
-          { y: 0, opacity: 1, rotation: 0, scale: 1, duration: 0.35, stagger: 0.04, ease: "back.out(1.2)" }
+          {
+            y: 0,
+            opacity: 1,
+            rotation: 0,
+            scale: 1,
+            duration: 0.25,
+            stagger: 0.03,
+            ease: "back.out(1.2)",
+            scrollTrigger: {
+              trigger: sectionRef.current,
+            start: "top bottom+=30%",
+            toggleActions: "play none none reverse",
+            },
+          }
         );
       }
 
-      // Continuous parallax — keeps section alive during scroll
-      tl.fromTo(
+      gsap.fromTo(
         contentRef.current,
-        { yPercent: 5 },
-        { yPercent: -5, ease: "none" },
-        0
+        { yPercent: 3 },
+        {
+          yPercent: -3,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom+=30%",
+            end: "top top",
+            scrub: 1,
+          },
+        }
       );
     }, sectionRef);
 
@@ -74,7 +84,7 @@ export default function SkillsSection() {
   const categories = [...new Set(skills.map((s) => s.category))];
 
   return (
-    <section id="skills" ref={sectionRef} className="pin-section relative">
+    <section id="skills" ref={sectionRef} className="pin-section relative bg-background">
       <div className="absolute top-1/3 right-0 w-96 h-96 bg-neon/10 rounded-full blur-[120px]" />
       <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-neon-purple/10 rounded-full blur-[100px]" />
 

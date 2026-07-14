@@ -16,51 +16,50 @@ export default function AboutSection() {
     const ctx = gsap.context(() => {
       const pinEnd = "+=80%";
 
+      // 1. Pin — smooth hold, independent of animation speed
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
         end: pinEnd,
         pin: true,
-        scrub: 0.7,
+        scrub: 1,
         fastScrollEnd: true,
-      });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top bottom-=10%",
-          end: pinEnd,
-          scrub: 0.7,
-          fastScrollEnd: true,
-        },
+        invalidateOnRefresh: true,
       });
 
       const items = contentRef.current?.querySelectorAll("[data-abt]");
       if (items) {
-        // About: clip-path reveal + scale — unique pattern
-        gsap.set(items, { clipPath: "inset(0 100% 0 0)" });
-        tl.to(items, {
+        // 2. Items clipPath reveal — plays at NATURAL speed on scroll-enter
+        gsap.set(items, { clipPath: "inset(0 100% 0 0)", opacity: 0, scale: 0.97 });
+        gsap.to(items, {
           clipPath: "inset(0 0% 0 0)",
-          scale: 1,
           opacity: 1,
-          duration: 0.5,
-          stagger: 0.08,
+          scale: 1,
+          duration: 0.25,
+          stagger: 0.04,
           ease: "power4.inOut",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom+=30%",
+            toggleActions: "play none none reverse",
+          },
         });
-        tl.fromTo(
-          items,
-          { scale: 0.97 },
-          { scale: 1, duration: 0.01 },
-          0
-        );
       }
 
-      // Continuous parallax — extra dynamic for alive feel
-      tl.fromTo(
+      // 3. Parallax — follows scroll subtly (independently of items)
+      gsap.fromTo(
         contentRef.current,
-        { yPercent: 5 },
-        { yPercent: -5, ease: "none" },
-        0
+        { yPercent: 3 },
+        {
+          yPercent: -3,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom+=30%",
+            end: "top top",
+            scrub: 1,
+          },
+        }
       );
     }, sectionRef);
 
@@ -68,7 +67,7 @@ export default function AboutSection() {
   }, []);
 
   return (
-    <section id="about" ref={sectionRef} className="pin-section relative">
+    <section id="about" ref={sectionRef} className="pin-section relative bg-background">
       {/* Background glow */}
       <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-neon-purple/10 rounded-full blur-[120px]" />
 

@@ -453,7 +453,7 @@ export default function TerminalEmulator() {
                 <line x1="12" y1="19" x2="20" y2="19" />
               </svg>
             </button>
-            <span className="font-mono text-[9px] text-white/20 bg-black/60 px-2 py-1 rounded-full backdrop-blur-sm whitespace-nowrap">
+            <span className="terminal-hint-label font-mono text-[9px] text-white/20 bg-black/60 px-2 py-1 rounded-full backdrop-blur-sm whitespace-nowrap">
               Tap para terminal
             </span>
           </div>
@@ -462,7 +462,7 @@ export default function TerminalEmulator() {
 
       {/* Overlay */}
       <div
-        className={`fixed inset-0 z-[9998] flex items-center justify-center p-4 md:p-8 transition-all duration-300 ${
+        className={`terminal-overlay fixed inset-0 z-[9998] flex items-center justify-center p-4 md:p-8 transition-all duration-300 ${
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         style={{
@@ -486,7 +486,7 @@ export default function TerminalEmulator() {
         >
           {/* Title bar */}
           <div
-            className="flex items-center gap-2 px-4 py-2.5 select-none"
+            className="terminal-titlebar flex items-center gap-2 px-4 py-2.5 select-none"
             style={{
               background: "rgba(10, 10, 30, 0.95)",
               borderBottom: "1px solid rgba(0, 240, 255, 0.1)",
@@ -512,7 +512,7 @@ export default function TerminalEmulator() {
           {/* Terminal body */}
           <div
             ref={bodyRef}
-            className="p-4 md:p-6 overflow-y-auto font-mono text-sm leading-relaxed"
+            className="terminal-body p-4 md:p-6 overflow-y-auto font-mono text-sm leading-relaxed"
             style={{
               background: "rgba(5, 5, 20, 0.97)",
               color: "#00f0ff",

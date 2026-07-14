@@ -35,7 +35,7 @@ export default function Scene3D({
         }}
         dpr={[1, 1.5]}
         gl={{
-          antialias: true,
+          antialias: false,
           alpha: true,
           powerPreference: "high-performance",
         }}

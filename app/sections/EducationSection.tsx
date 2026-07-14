@@ -21,36 +21,45 @@ export default function EducationSection() {
         start: "top top",
         end: pinEnd,
         pin: true,
-        scrub: 0.7,
+        scrub: 1,
         fastScrollEnd: true,
-      });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top bottom-=10%",
-          end: pinEnd,
-          scrub: 0.7,
-          fastScrollEnd: true,
-        },
+        invalidateOnRefresh: true,
       });
 
       const items = contentRef.current?.querySelectorAll("[data-edu]");
       if (items) {
-        // Education: blur reveal + scale — unique pattern
-        tl.fromTo(
+        gsap.fromTo(
           items,
           { filter: "blur(8px)", opacity: 0, scale: 0.9 },
-          { filter: "blur(0px)", opacity: 1, scale: 1, duration: 0.5, stagger: 0.12, ease: "power2.out" }
+          {
+            filter: "blur(0px)",
+            opacity: 1,
+            scale: 1,
+            duration: 0.25,
+            stagger: 0.06,
+            ease: "power2.out",
+            scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom+=30%",
+            toggleActions: "play none none reverse",
+            },
+          }
         );
       }
 
-      // Continuous parallax — keeps section alive during scroll
-      tl.fromTo(
+      gsap.fromTo(
         contentRef.current,
-        { yPercent: 5 },
-        { yPercent: -5, ease: "none" },
-        0
+        { yPercent: 3 },
+        {
+          yPercent: -3,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom+=30%",
+            end: "top top",
+            scrub: 1,
+          },
+        }
       );
     }, sectionRef);
 
@@ -58,7 +67,7 @@ export default function EducationSection() {
   }, []);
 
   return (
-    <section id="education" ref={sectionRef} className="pin-section relative">
+    <section id="education" ref={sectionRef} className="pin-section relative bg-background">
       <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-neon-purple/10 rounded-full blur-[120px]" />
 
       <div className="container mx-auto px-6">

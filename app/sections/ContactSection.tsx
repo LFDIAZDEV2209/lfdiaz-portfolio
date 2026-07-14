@@ -48,36 +48,44 @@ export default function ContactSection() {
         start: "top top",
         end: pinEnd,
         pin: true,
-        scrub: 0.7,
+        scrub: 1,
         fastScrollEnd: true,
-      });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top bottom-=10%",
-          end: pinEnd,
-          scrub: 0.7,
-          fastScrollEnd: true,
-        },
+        invalidateOnRefresh: true,
       });
 
       const items = contentRef.current?.querySelectorAll("[data-ct]");
       if (items) {
-        // Contact: slide up + subtle bounce — unique pattern
-        tl.fromTo(
+        gsap.fromTo(
           items,
           { y: 50, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.4, stagger: 0.06, ease: "back.out(1.4)" }
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.25,
+            stagger: 0.04,
+            ease: "back.out(1.4)",
+            scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom+=30%",
+            toggleActions: "play none none reverse",
+            },
+          }
         );
       }
 
-      // Continuous parallax — keeps section alive during scroll
-      tl.fromTo(
+      gsap.fromTo(
         contentRef.current,
-        { yPercent: 5 },
-        { yPercent: -5, ease: "none" },
-        0
+        { yPercent: 3 },
+        {
+          yPercent: -3,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom+=30%",
+            end: "top top",
+            scrub: 1,
+          },
+        }
       );
     }, sectionRef);
 
@@ -85,7 +93,7 @@ export default function ContactSection() {
   }, []);
 
   return (
-    <section id="contact" ref={sectionRef} className="pin-section relative">
+    <section id="contact" ref={sectionRef} className="pin-section relative bg-background">
       <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-neon/10 rounded-full blur-[140px]" />
 
       <div className="container mx-auto px-6">

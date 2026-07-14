@@ -22,34 +22,45 @@ export default function TestimonialsSection() {
         start: "top top",
         end: pinEnd,
         pin: true,
-        scrub: 0.7,
+        scrub: 1,
         fastScrollEnd: true,
-      });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top bottom-=10%",
-          end: pinEnd,
-          scrub: 0.7,
-          fastScrollEnd: true,
-        },
+        invalidateOnRefresh: true,
       });
 
       const items = contentRef.current?.querySelectorAll("[data-tm]");
       if (items) {
-        tl.fromTo(
+        gsap.fromTo(
           items,
           { y: 40, opacity: 0, rotateX: 5 },
-          { y: 0, opacity: 1, rotateX: 0, duration: 0.4, stagger: 0.1, ease: "power3.out" }
+          {
+            y: 0,
+            opacity: 1,
+            rotateX: 0,
+            duration: 0.25,
+            stagger: 0.05,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: sectionRef.current,
+            start: "top bottom+=30%",
+            toggleActions: "play none none reverse",
+            },
+          }
         );
       }
 
-      tl.fromTo(
+      gsap.fromTo(
         contentRef.current,
-        { yPercent: 5 },
-        { yPercent: -5, ease: "none" },
-        0
+        { yPercent: 3 },
+        {
+          yPercent: -3,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom+=30%",
+            end: "top top",
+            scrub: 1,
+          },
+        }
       );
     }, sectionRef);
 
@@ -68,7 +79,7 @@ export default function TestimonialsSection() {
   const t = testimonials[current];
 
   return (
-    <section id="testimonials" ref={sectionRef} className="pin-section relative">
+    <section id="testimonials" ref={sectionRef} className="pin-section relative bg-background">
       <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-neon-green/10 rounded-full blur-[120px]" />
       <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-neon-purple/10 rounded-full blur-[100px]" />
 

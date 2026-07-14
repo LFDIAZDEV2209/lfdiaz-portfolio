@@ -5,7 +5,9 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { MeshSurfaceSampler } from "three/addons/math/MeshSurfaceSampler.js";
 import * as THREE from "three";
 
-const PARTICLE_COUNT = 3500;
+// Adaptive particle count — desktop gets full, mobile gets fewer
+const PARTICLE_COUNT =
+  typeof window !== "undefined" && window.innerWidth < 768 ? 1200 : 2000;
 const CURSOR_STRENGTH = 0.3;
 
 const vertexShader = `
@@ -172,8 +174,18 @@ export default function ParticleField() {
     return () => window.removeEventListener("keydown", handleKey);
   }, []);
 
+  // ── Skip 3D when tab is hidden to save CPU ──
+  const visibleRef = useRef(true);
+  useEffect(() => {
+    const onVis = () => { visibleRef.current = !document.hidden; };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
+
   // ── 4. CPU position recalc every frame ──
   useFrame((_, delta) => {
+    // Skip entirely if tab is hidden (saves massive CPU on background tabs)
+    if (!visibleRef.current) return;
     if (!pointsRef.current || !materialRef.current || !geometryRef.current) return;
 
     const posAttr = geometryRef.current.attributes.position;

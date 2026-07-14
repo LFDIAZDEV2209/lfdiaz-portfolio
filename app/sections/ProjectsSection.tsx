@@ -26,14 +26,16 @@ export default function ProjectsSection() {
         end: pinEnd,
         pin: true,
         scrub: 0.7,
+        fastScrollEnd: true,
       });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top top",
+          start: "top bottom-=10%",
           end: pinEnd,
           scrub: 0.7,
+          fastScrollEnd: true,
         },
       });
 
@@ -191,11 +193,11 @@ export default function ProjectsSection() {
 
                   {/* Tech tags with icons */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {p.tech.map((t) => {
+                    {p.tech.map((t, i) => {
                       const TechIcon = getTechIcon(t);
                       return (
                         <span
-                          key={t}
+                          key={`${t}-${i}`}
                           className="inline-flex items-center gap-1 px-2.5 py-1 font-mono text-[10px] bg-white/5 text-white/50 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/10 transition-all"
                         >
                           <TechIcon size={12} />

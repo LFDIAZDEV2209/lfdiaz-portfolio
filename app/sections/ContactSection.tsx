@@ -49,14 +49,16 @@ export default function ContactSection() {
         end: pinEnd,
         pin: true,
         scrub: 0.7,
+        fastScrollEnd: true,
       });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top top",
+          start: "top bottom-=10%",
           end: pinEnd,
           scrub: 0.7,
+          fastScrollEnd: true,
         },
       });
 
@@ -108,31 +110,45 @@ export default function ContactSection() {
                   <label htmlFor="contact-name" className="font-mono text-[11px] tracking-wider text-white/40 uppercase">Nombre</label>
                   <input
                     id="contact-name"
+                    name="from_name"
                     type="text"
                     placeholder="Tu nombre"
                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-foreground text-sm placeholder:text-white/20 focus:outline-none focus:border-neon/40 focus:ring-1 focus:ring-neon/20 transition-all"
+                    required
                   />
                 </div>
                 <div className="space-y-1.5">
                   <label htmlFor="contact-email" className="font-mono text-[11px] tracking-wider text-white/40 uppercase">Email</label>
                   <input
                     id="contact-email"
+                    name="from_email"
                     type="email"
                     placeholder="tu@email.com"
                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-foreground text-sm placeholder:text-white/20 focus:outline-none focus:border-neon/40 focus:ring-1 focus:ring-neon/20 transition-all"
+                    required
                   />
                 </div>
                 <div className="space-y-1.5">
                   <label htmlFor="contact-message" className="font-mono text-[11px] tracking-wider text-white/40 uppercase">Mensaje</label>
                   <textarea
                     id="contact-message"
+                    name="message"
                     rows={4}
                     placeholder="Cuéntame sobre tu proyecto..."
                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-foreground text-sm placeholder:text-white/20 focus:outline-none focus:border-neon/40 focus:ring-1 focus:ring-neon/20 transition-all resize-none"
+                    required
                   />
                 </div>
                 {error && (
-                  <p className="text-red-400 text-xs font-mono text-center">{error}</p>
+                  <div className="text-center space-y-2">
+                    <p className="text-red-400 text-xs font-mono">{error}</p>
+                    <a
+                      href={`mailto:${profile.email}?subject=Contacto desde portfolio&body=Hola Luis,`}
+                      className="inline-flex items-center gap-1.5 text-xs text-neon hover:text-neon/80 transition-colors font-mono"
+                    >
+                      ✉️ Escríbeme directamente →
+                    </a>
+                  </div>
                 )}
                 {sent ? (
                   <div className="flex flex-col items-center gap-3 py-3">

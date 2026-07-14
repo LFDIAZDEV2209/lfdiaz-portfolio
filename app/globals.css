@@ -369,6 +369,21 @@ html *::after {
 .loader-tagline { animation: loader-tagline 2s ease-in-out infinite; }
 .loader-dot { animation: loader-dot 1.4s ease-in-out infinite; }
 
+/* ── Matrix rain effect ── */
+.matrix-rain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9996;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 255, 70, 0.03) 50%, transparent 100%);
+  animation: matrixScroll 2s linear infinite;
+}
+@keyframes matrixScroll {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
 /* ── Grid bg ── */
 .grid-bg {
   background-image:

@@ -32,6 +32,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setMounted(true);
   }, []);
 
+  // Listen for theme changes from the terminal emulator
+  useEffect(() => {
+    const handleTerminalTheme = (e: Event) => {
+      const t = (e as CustomEvent).detail;
+      if (t === "dark" || t === "light") {
+        setThemeState(t);
+      }
+    };
+    window.addEventListener("terminal-theme", handleTerminalTheme);
+    return () => window.removeEventListener("terminal-theme", handleTerminalTheme);
+  }, []);
+
   useEffect(() => {
     if (!mounted) return;
     const root = document.documentElement;

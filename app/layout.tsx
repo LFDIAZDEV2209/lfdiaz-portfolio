@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import LoadingScreen from "./components/LoadingScreen";
 import ReadingProgressBar from "./components/ReadingProgressBar";
 import { ThemeProvider } from "./hooks/useTheme";
+import TerminalEmulator from "./components/TerminalEmulator";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -76,6 +77,7 @@ export default function RootLayout({
           <CursorEffect />
           <LenisSmoothScroll />
           <Navbar />
+          <TerminalEmulator />
           <main id="main-content">
             {children}
           </main>

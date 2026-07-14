@@ -22,14 +22,16 @@ export default function EducationSection() {
         end: pinEnd,
         pin: true,
         scrub: 0.7,
+        fastScrollEnd: true,
       });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top top",
+          start: "top bottom-=10%",
           end: pinEnd,
           scrub: 0.7,
+          fastScrollEnd: true,
         },
       });
 
